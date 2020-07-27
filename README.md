@@ -1,7 +1,7 @@
 kmdata
 ====
 
-This R^[[1]](#1)^ package contains a database of 304 reconstructed,
+This R<sup>[[1]](#1)</sup> package contains a database of 304 reconstructed,
 patient-level clinical trial datasets on multiple survival endpoints,
 including overall and progression-free survival.
 
@@ -19,7 +19,7 @@ All reported KM survival curves were digitized with the software
 [DigitizeIt](https://www.digitizeit.de).
 
 The digitized KM survival curves were used to estimate (possibly censored)
-patient-level event times using the Guyot-algorithm^[[2]](#2)^.
+patient-level event times using the Guyot-algorithm<sup>[[2]](#2)</sup>.
 
 ### References
 <a id="1">[1]</a>
