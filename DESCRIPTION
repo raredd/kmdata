@@ -1,0 +1,27 @@
+Package: kmdata
+Type: Package
+Title: kmdata
+Version: 1.0.0
+Authors@R: as.person(c(
+    "Robert Redd <rredd@jimmy.harvard.edu> [aut, cre]",
+    "Geoffrey Fell <gfell@jimmy.harvard.edu> [aut]",
+    "Rifaquat Rahman <rrahman@bwh.harvard.edu> [aut]"
+  ))
+Author: Robert Redd [aut, cre], Geoffrey Fell [aut], Rifaquat Rahman [aut]
+Maintainer: Robert Redd <rredd@jimmy.harvard.edu>
+Description: Digitized Kaplan-Meier data.
+Depends:
+  survival
+Imports:
+  fdrtool,
+  graphics,
+  stats
+Suggests:
+  knitr,
+  testthat
+License: MIT
+LazyData: yes
+URL: https://github.com/raredd/kmdata
+VignetteBuilder: knitr
+RoxygenNote: 7.1.1
+Encoding: UTF-8

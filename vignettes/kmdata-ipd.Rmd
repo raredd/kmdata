@@ -1,0 +1,59 @@
+---
+title: "kmdata - ipd"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{kmdata - ipd}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, include=FALSE}
+library('knitr')
+
+opts_chunk$set(
+  cache = FALSE, fig.align = 'center', dev = 'png',
+  fig.width=9, fig.height=7, echo = TRUE, message = FALSE
+)
+```
+
+## Generating IPD
+
+In addition to the recapitulated study data, the `kmdata` package contains
+the algorithm to re-create patient-level time-to-event data from digitized
+survival curves.
+
+Digitized curves are simply the x- and y-coordinates of the Kaplan-Meier
+curves which can be generated several ways including the \code{R} package
+**`digitize`** or proprietary software such as
+[DigitizeIt](https://digitizeit.soft112.com/).
+
+```{r}
+library('kmdata')
+
+xy <- system.file('etc', 'init', 'Checkmate 067_S3A_Nivolumab.csv',
+                  package = 'kmdata')
+ar <- system.file('etc', 'init', 'At Risk.csv',
+                  package = 'kmdata')
+
+dd <- read.csv(xy)
+aa <- read.csv(ar)
+aa <- aa[aa$nrisk > 0, ]
+
+ipd <- ipd(dd$T, dd$S, aa$trisk, aa$nrisk, arm = 'Nivo')
+kmplot(ipd, conf.int = FALSE, median = FALSE)
+
+points(S ~ T, dd, type = 's', col = 'red')
+
+legend(
+  'topright', legend = c('Re-capitulated', 'Truth (no censoring\ndata available)'),
+  col = 1:2, lty = 1, bty = 'n', lwd = 2
+)
+```
+
+## References
+
+Guyot, Patricia, et al. Enhanced secondary analysis of survival data:
+reconstructing the data from published Kaplan-Meier survival curves.
+_BMC Medical Research Methodology_ 2012, **12**:9.

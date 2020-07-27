@@ -1,0 +1,39 @@
+kmdata 1.0.0
+27 jul 2020
+--------
+  * initial release
+
+kmdata 0.0.0.9004
+01 jul 2020
+--------
+  * add missing citations
+  * add time units, missing events, tx arm labels, tx class, year, quality
+  * add units, events to kmplot
+  * update descriptions of kmdata_key
+  * add intro, ipd vignettes
+
+kmdata 0.0.0.9003
+17 feb 2020
+--------
+  * updates, bug fixes
+
+kmdata 0.0.0.9002
+17 feb 2020
+--------
+  * add validation, deviance measures
+  * add select_kmdata, kmdata_key
+  * updated manuscript
+  * updates, additional features of kmplot
+  * expand docs and examples
+
+kmdata 0.0.0.9001
+01 dec 2019
+--------
+  * digi - fix time=0 bug
+  * ipd_ - alternatives for case of atrisk=0/KMhat=0/d=NaN
+  * fix errors in delta data example
+
+kmdata 0.0.0.9000
+14 nov 2019
+--------
+  * initial build

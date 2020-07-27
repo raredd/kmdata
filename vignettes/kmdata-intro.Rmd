@@ -1,0 +1,186 @@
+---
+title: "kmdata - intro"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{kmdata - intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, include=FALSE}
+library('knitr')
+
+opts_chunk$set(
+  cache = FALSE, fig.align = 'center', dev = 'png',
+  fig.width=9, fig.height=7, echo = TRUE, message = FALSE
+)
+```
+
+## Data sets available
+
+```{r}
+library('kmdata')
+
+data(package = 'kmdata')
+```
+
+This will show a list of the data sets available. Data objects can be
+references by `A001_2` or `` `TRIBE(2)_2A` `` (with backticks) for data
+names with special characters.
+
+The name consists of the study short-name and figure identifier:
+
+```{r}
+data <- ls('package:kmdata', pattern = '^[A-Z]')
+cbind(
+  name = data,
+  study = gsub('_.*', '', data),
+  figure = gsub('.*_', '', data)
+)[1:5, ]
+```
+
+For example, study "A001" has two figures: "1" and "2." Study "A002"
+has only one figure: "1." If data sets were part of multi-panel figures, the
+name will look similar to study "A003" with figure IDs "2A" and "2B."
+
+All data sets are listed in `kmdata_key` along with some useful metadata for
+each including the journal and publication identifiers, outcomes and study
+arms, quality of the re-capitulated data, and other information.
+
+## Working with the data
+
+Each data set contains the same format for consistency:
+
+```{r, echo=FALSE}
+knitr::kable(
+  data.frame(
+    time = 'time-to-event (in units)', event = 'event indicator (0/1)',
+    arm = 'treatment arm identifier (e.g., arm-1 vs arm-2)'
+  )
+)
+```
+
+The time unit, event type, and treatment arms can be found in the help page
+for each data set, e.g., `?ACT1_2A`. Additionally, the data objects contain
+metadata stored as attributes:
+
+```{r}
+head(ACT1_2A)
+
+attr(ACT1_2A, 'event')
+
+attributes(ACT1_2A)[-(1:3)]
+```
+
+Data may be examined and plotted using the built-in functions `summary` and
+`kmplot`.
+
+```{r, fig.show='hold', message = TRUE}
+summary(ACT1_2A)
+
+kmplot(ACT1_2A)
+```
+
+## Selecting data
+
+The `kmdata` package contains a function, `select_kmdata`, to easily search
+and filter data sets which share common features. Any of the columns in
+`kmdata_key` may be used to filter.
+
+For example, if we wanted a list of lung cancer data sets with overall
+survival (OS) in months with fewer than 500 patients reporting at least a
+1.2 hazard ratio for treatment compared to a reference arm, we can use the
+following:
+
+```{r}
+select_kmdata(
+  Cancer %in% 'Lung' &
+    Outcome %in% 'OS' &
+    Units %in% 'months' &
+    ReportedSampleSize < 500 &
+    HazardRatio >= 1.2,
+  return = 'name'
+)
+```
+
+By default, `select_kmdata` returns only the names of the data sets for
+reference individually (i.e., `select_kmdata(..., return = 'name')`), but
+it can also return the matching rows of `kmdata_key` or the matching data
+sets as a list.
+
+```{r, fig.height=11, fig.width=12, results='hide'}
+key <- select_kmdata(
+  Cancer %in% 'Lung' &
+    Outcome %in% 'OS' &
+    Units %in% 'months' &
+    ReportedSampleSize < 500 &
+    HazardRatio >= 1.2,
+  return = 'key'
+)
+
+dat <- select_kmdata(
+  Cancer %in% 'Lung' &
+    Outcome %in% 'OS' &
+    Units %in% 'months' &
+    ReportedSampleSize < 500 &
+    HazardRatio >= 1.2,
+  return = 'data'
+)
+
+par(mfrow = n2mfrow(length(dat)))
+for (dd in dat)
+  kmplot(dd)
+```
+
+## Data quality
+
+Each figure and data set contains a quality score which represents how well
+the re-capitulated agrees with the original publication. Scores range from
+0 (worst) to 100% (best) and are an aggregation of four metrics: hazard ratio,
+total events, median time-to-event, and number at-risk.
+
+Each metric is score from 0 (worst) to 3 (best); the maximum score per figure
+may vary with the metrics reported in the original publication. For example,
+if only one was reported, the maximum score is 3/3.
+
+A score of 3 points is given per metric per figure if the re-capitulated
+metric is no more than 5% different than the published, 2 points are given
+if the metric is 5-10% different, 1 point for 10-20%, and 0 points for more
+than 20% different.
+
+|  % difference from publication |  Quality points per metric |
+|-------------------------------:|---------------------------:|
+|                            0-5 |                          3 |
+|                           5-10 |                          2 |
+|                          10-20 |                          1 |
+|                        &gt; 20 |                          0 |
+
+---
+
+## References
+
+The publications and figures available in this package are listed below by
+first author.
+
+<details>
+<summary>Click to expand</summary>
+```{r, echo=FALSE}
+cit <- system.file('docs', 'Citations_final.xlsx', package = 'kmdata')
+cit <- as.data.frame(readxl::read_excel(cit, skip = 1L))
+
+cit <- within(cit, {
+  Title    <- gsub('^.*?\\.\\s+|\\.\\s+[A-z ]+\\d{4};.*$', '', Reference)
+  Author   <- gsub('^([^.]+\\.)|.', '\\1', Reference)
+  PubData  <- gsub('([A-z ]+\\s+\\d{4};.*)\\.$|.', '\\1', Reference)
+  Journal  <- gsub('(.*?)\\d{4};|.', '\\1', PubData)
+  Year     <- gsub('(\\d{4});|.', '\\1', PubData)
+  Location <- gsub('^.*?\\d{4};\\s*', '\\1', PubData)
+})[, c('PMID', 'Author', 'Journal', 'Year', 'Title', 'Location')]
+cit <- cit[order(cit$Author), ]
+rownames(cit) <- NULL
+
+knitr::kable(cit, format = 'markdown', caption = 'List of publications.')
+```
+</details>

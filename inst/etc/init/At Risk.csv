@@ -1,0 +1,17 @@
+interval,trisk,lower,upper,nrisk,TE,StudyID,Figure#,Arm
+1,0,,,80,,Checkmate 067,S3A,Nivolumab
+2,3,,,79,,Checkmate 067,S3A,Nivolumab
+3,6,,,75,,Checkmate 067,S3A,Nivolumab
+4,9,,,73,,Checkmate 067,S3A,Nivolumab
+5,12,,,68,,Checkmate 067,S3A,Nivolumab
+6,15,,,63,,Checkmate 067,S3A,Nivolumab
+7,18,,,61,,Checkmate 067,S3A,Nivolumab
+8,21,,,58,,Checkmate 067,S3A,Nivolumab
+9,24,,,57,,Checkmate 067,S3A,Nivolumab
+10,27,,,54,,Checkmate 067,S3A,Nivolumab
+11,30,,,53,,Checkmate 067,S3A,Nivolumab
+12,33,,,49,,Checkmate 067,S3A,Nivolumab
+13,36,,,47,,Checkmate 067,S3A,Nivolumab
+14,39,,,38,,Checkmate 067,S3A,Nivolumab
+15,42,,,10,,Checkmate 067,S3A,Nivolumab
+16,45,,,0,,Checkmate 067,S3A,Nivolumab
