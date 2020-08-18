@@ -32,10 +32,12 @@ curves which can be generated several ways including the \code{R} package
 ```{r}
 library('kmdata')
 
-xy <- system.file('etc', 'init', 'Checkmate 067_S3A_Nivolumab.csv',
-                  package = 'kmdata')
-ar <- system.file('etc', 'init', 'At Risk.csv',
-                  package = 'kmdata')
+xy <- system.file(
+  'etc', 'init', 'Checkmate 067_S3A_Nivolumab.csv', package = 'kmdata'
+)
+ar <- system.file(
+  'etc', 'init', 'At Risk.csv', package = 'kmdata'
+)
 
 dd <- read.csv(xy)
 aa <- read.csv(ar)
@@ -47,8 +49,8 @@ kmplot(ipd, conf.int = FALSE, median = FALSE)
 points(S ~ T, dd, type = 's', col = 'red')
 
 legend(
-  'topright', legend = c('Re-capitulated', 'Truth (no censoring\ndata available)'),
-  col = 1:2, lty = 1, bty = 'n', lwd = 2
+  'topright', col = 1:2, lty = 1, bty = 'n', lwd = 2,
+  legend = c('Re-capitulated', 'Truth (no censoring\ndata available)')
 )
 ```
 

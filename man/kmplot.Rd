@@ -85,11 +85,15 @@ and hazard ratios is added}
 Make a Kaplan-Meier plot of a data set.
 }
 \examples{
-kmplot(A001_2)
-kmplot(A001_3, relevel = TRUE, col = 3:4, xaxis.at = 0:6, median = FALSE)
+kmplot(ATTENTION_2A)
+kmplot(
+  ATTENTION_2A,
+  relevel = TRUE, median = FALSE,
+  col = 3:4, xaxis.at = 0:4 * 6
+)
 
 ## or equivalently
-s <- survfit(Surv(time, event) ~ arm, A001_2)
+s <- survfit(Surv(time, event) ~ arm, ATTENTION_2A)
 plot(s, col = 1:2, mark.time = TRUE)
 
 

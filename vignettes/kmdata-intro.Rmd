@@ -27,7 +27,7 @@ data(package = 'kmdata')
 ```
 
 This will show a list of the data sets available. Data objects can be
-references by `A001_2` or `` `TRIBE(2)_2A` `` (with backticks) for data
+references by `ATTENTION_2A` or `` `TRIBE(2)_2A` `` (with backticks) for data
 names with special characters.
 
 The name consists of the study short-name and figure identifier:
@@ -41,9 +41,9 @@ cbind(
 )[1:5, ]
 ```
 
-For example, study "A001" has two figures: "1" and "2." Study "A002"
-has only one figure: "1." If data sets were part of multi-panel figures, the
-name will look similar to study "A003" with figure IDs "2A" and "2B."
+For example, study "ATTENTION" has two figures: "2A" and "2B." Study "ACTSCC"
+has only one figure: "2A." If data sets sourced from multi-panel figures, the
+name will look similar to study "ATTENTION" with figure IDs "2A" and "2B."
 
 All data sets are listed in `kmdata_key` along with some useful metadata for
 each including the journal and publication identifiers, outcomes and study
