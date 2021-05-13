@@ -1,92 +1,85 @@
-### unexported utilities
-# %||%, pvalr, rescaler, hr_pval, hr_text
-###
+### utilities
+# select_kmdata, summary.kmdata
+### 
 
 
-`%||%` <- function(x, y) {
-  if (is.null(x) || length(x) == 0L)
-    y else x
-}
+#' Select data sets
+#' 
+#' Select publication data sets based on study characteristics including
+#' outcome, sample size, treatment arms, journal, disease, etc.
+#' 
+#' @param ... an expression to be evaluated within \code{\link{kmdata_key}}
+#'   such as \code{SampleSize < 100}; see examples
+#' @param return type of object to return; one of \code{"name"} (default) for
+#'   the study names that match the criteria, \code{"key"} for the matching
+#'   rows of \code{kmdata_key}, or \code{"data"} for a list of data frames for
+#'   each match
+#' 
+#' @examples
+#' names(kmdata_key)
+#' select_kmdata(SampleSize < 100)
+#' select_kmdata(grepl('folfiri', Arms) & Outcome == 'OS')
+#' select_kmdata(SampleSize < 100 | Cancer %in% c('Lung/Colorectal', 'Prostate'))
+#' 
+#' ## get a list of the data sets
+#' l <- select_kmdata(SampleSize < 100, return = 'data')
+#' par(mfrow = n2mfrow(length(l)))
+#' sapply(l, kmplot)
+#' 
+#' @export
 
-pvalr <- function(pv, sig.limit = 0.001, digits = 2L, show.p = TRUE) {
-  pv <- if (pv < sig.limit)
-    sig.limit else format.pval(pv, digits = digits)
+select_kmdata <- function(..., return = c('name', 'key', 'data')) {
+  m <- match.call(expand.dots = FALSE)
+  l <- which(eval(m$`...`[[1L]], kmdata::kmdata_key))
   
-  pv <- if (pv == '1')
-    'p > 0.99' else paste(ifelse(pv < sig.limit, 'p <', 'p ='), pv)
-  
-  if (show.p)
-    pv else gsub('.* ', '', pv)
-}
-
-rescaler <- function(x, to = c(0, 1), from = range(x, na.rm = TRUE)) {
-  (x - from[1L]) / diff(from) * diff(to) + to[1L]
-}
-
-hr_pval <- function(object, details = FALSE, data = NULL, ...) {
-  ## rawr:::hr_pval
-  object <- if (inherits(object, c('survdiff', 'survfit'))) {
-    if (length(form <- object$call$formula) == 1L)
-      object$call$formula <- eval(object$call$formula, parent.frame(1L))
-    coxph(as.formula(object$call$formula),
-          eval(data %||% object$.data %||% object$call$data))
-  } else if (inherits(object, c('formula', 'call')))
-    coxph(object, data, ...)
-  else object
-  
-  stopifnot(
-    inherits(object, 'coxph')
+  switch(
+    match.arg(return),
+    name = kmdata_key$name[l],
+    key = kmdata_key[l, ],
+    data = mget(kmdata_key$name[l], as.environment('package:kmdata'))
   )
-  
-  obj <- summary(object)
-  obj <- cbind(obj$conf.int[, -2L, drop = FALSE],
-               p.value = obj$coefficients[, 'Pr(>|z|)'])
-  
-  if (details)
-    obj
-  else obj[, 'p.value']
 }
 
-hr_text <- function(formula, data, ..., details = TRUE, pFUN = NULL) {
-  ## rawr:::hr_text
-  pFUN <- if (is.null(pFUN) || isTRUE(pFUN))
-    function(x) pvalr(x, show.p = TRUE)
-  else if (identical(pFUN, FALSE))
-    identity else match.fun(pFUN)
+#' Summarize \code{kmdata}
+#' 
+#' Print a summary of a \code{kmdata} object.
+#' 
+#' @param object an object of class \code{"kmdata"}
+#' @param message logical; if \code{TRUE} (default), a description of the
+#'   study will be printed with the summary
+#' @param ... ignored
+#' 
+#' @examples
+#' summary(ATTENTION_2A)
+#' 
+#' @export
+
+summary.kmdata <- function(object, message = TRUE, ...) {
+  att <- attributes(object)
+  tbl <- table(object$arm)
   
-  object <- if (inherits(formula, 'coxph'))
-    formula
-  else if (inherits(formula, 'survfit'))
-    coxph(as.formula(formula$call$formula),
-          if (!missing(data)) data else eval(formula$call$data), ...)
-  else formula
+  txt <- c(
+    att$title,
+    sprintf(
+      'Time-to-event data of %s observations (%s %s events, %.0f%%) and
+      %s arms (%s)\n\nSource:',
+      nrow(object), sum(object$event), attr(object, 'event'),
+      mean(object$event) * 100, length(tbl),
+      toString(sprintf('%s: n=%s', names(tbl), tbl))
+    ),
+    att$source
+  )
+  txt <- strwrap(
+    txt, getOption('width') * 0.75,
+    prefix = '\n', initial = '', exdent = 2L
+  )
+  if (message)
+    message(txt)
   
-  suppressWarnings({
-    cph <- tryCatch(
-      if (inherits(object, 'coxph'))
-        object else coxph(formula, data, ...),
-      # warning = function(w) '',
-      error   = function(e) e
-    )
+  object <- within(as.data.frame(object), {
+    arm <- factor(arm)
+    event <- factor(event)
   })
   
-  if (isTRUE(cph))
-    return(FALSE)
-  if (identical(cph, ''))
-    return(cph)
-  if (!inherits(cph, 'coxph'))
-    stop(cph)
-  
-  obj <- hr_pval(cph, details = TRUE)
-  
-  txt <- apply(obj, 1L, function(x)
-    sprintf('HR %.2f (%.2f, %.2f), %s', x[1L], x[2L], x[3L],
-            {pv <- pFUN(x[4L]); if (is.na(pv)) 'p > 0.99' else pv}))
-  lbl <- attr(terms(cph), 'term.labels')
-  txt <- paste(cph$xlevels[[lbl[!grepl('strata\\(', lbl)]]],
-               c('Reference', txt), sep = ': ')
-  
-  if (is.null(cph$xlevels))
-    c(NA, gsub('^.*: ', '', txt)[-1L])
-  else txt
+  summary(object)
 }

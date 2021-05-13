@@ -1,7 +1,7 @@
 Package: kmdata
 Type: Package
 Title: kmdata
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: as.person(c(
     "Robert Redd <rredd@jimmy.harvard.edu> [aut, cre]",
     "Geoffrey Fell <gfell@jimmy.harvard.edu> [aut]",
