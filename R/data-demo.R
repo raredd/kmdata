@@ -98,12 +98,12 @@
 #'   publication/therapy \cr
 #' \tab \code{Race:Other} \tab the number of non-White/Caucasian by
 #'   publication/therapy \cr
-#' \tab \code{ECOG:0/1} \tab the number of patients with an ECOG performance
-#'   score of 0 or 1 by publication/therapy \cr
-#' \tab \code{ECOG:2+} \tab the number of patients with an ECOG performance
-#'   score of 2+ by publication/therapy \cr
-#' \tab \code{ECOG:UNK} \tab the number of patients with an ECOG performance
-#'   score of unknown by publication/therapy \cr
+#' \tab \code{ECOG-PS 0 or 1} \tab the number of patients with an ECOG
+#'   performance score of 0 or 1 by publication/therapy \cr
+#' \tab \code{ECOG=PS >=2} \tab the number of patients with an ECOG
+#'   performance score of 2+ by publication/therapy \cr
+#' \tab \code{ECOG-PS unknown} \tab the number of patients with an ECOG
+#'   performance score of unknown by publication/therapy \cr
 #' 
 #' }
 #' 
