@@ -17,8 +17,6 @@
 #' @param arm (optional) arm label
 #' @param tau maximum follow-up time
 #' 
-#' @import fdrtool
-#' 
 #' @references
 #' Guyot, Patricia, et al. Enhanced secondary analysis of survival data:
 #' reconstructing the data from published Kaplan-Meier survival curves.

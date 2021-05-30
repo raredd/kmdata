@@ -56,7 +56,10 @@
 #' @name kmdata-package
 #' @aliases kmdata
 #' @docType package
+#' 
 #' @import survival
+#' 
+#' @importFrom fdrtool monoreg
 #' @importFrom graphics axis box grconvertX hist mtext par text
 #' @importFrom stats as.formula pchisq terms
 NULL

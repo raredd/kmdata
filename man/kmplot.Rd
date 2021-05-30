@@ -6,12 +6,13 @@
 \title{kmplot}
 \usage{
 kmplot(
-  data,
+  x,
   ...,
   relevel = FALSE,
   col = NULL,
   plot = TRUE,
   xlim = NULL,
+  ylim = NULL,
   xaxis.at = NULL,
   xlab = NULL,
   ylab = NULL,
@@ -25,12 +26,13 @@ kmplot(
 )
 
 \method{plot}{kmdata}(
-  data,
+  x,
   ...,
   relevel = FALSE,
   col = NULL,
   plot = TRUE,
   xlim = NULL,
+  ylim = NULL,
   xaxis.at = NULL,
   xlab = NULL,
   ylab = NULL,
@@ -44,21 +46,23 @@ kmplot(
 )
 }
 \arguments{
-\item{data}{a data set of class \code{"kmdata"}; alternatively, a data
-frame with columns "time", "event", and "arm"}
+\item{x}{a data set of class \code{"kmdata"}, i.e., one of the data sets
+in the \pkg{kmdata} package; alternatively, a data frame with columns
+"time", "event", and "arm"}
 
-\item{...}{additional arguments passed to \code{\link[survival]{plot.survfit}}}
+\item{...}{additional arguments passed to \code{\link[survival]{plot.survfit}}
+or further to \code{\link{plot.default}} or \code{\link{par}}}
 
 \item{relevel}{logical; if \code{TRUE}, group order is reversed; by default,
-the arms are in alphabetical order which may not be desired for some placebo
-or control arms}
+the arms are in alphabetical order which may not be desired for some
+placebo or control arms}
 
 \item{col}{a vector of colors for the survival curves (recycled for at-risk
 table, medians, and legend)}
 
 \item{plot}{logical; if \code{TRUE}, a KM figure is drawn}
 
-\item{xlim}{x-axis limits}
+\item{xlim, ylim}{x- and y-axis limits}
 
 \item{xaxis.at}{x-axis positions of ticks and at-risk table}
 
@@ -86,6 +90,7 @@ Make a Kaplan-Meier plot of a data set.
 }
 \examples{
 kmplot(ATTENTION_2A)
+
 kmplot(
   ATTENTION_2A,
   relevel = TRUE, median = FALSE,
@@ -98,9 +103,7 @@ plot(s, col = 1:2, mark.time = TRUE)
 
 
 ## kmplot can be used generically given the proper data structure
-dat <- data.frame(
-  time = aml$time, event = aml$status, arm = aml$x
-)
+dat <- data.frame(time = aml$time, event = aml$status, arm = aml$x)
 kmplot(dat)
 
 }

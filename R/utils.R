@@ -9,7 +9,7 @@
 #' outcome, sample size, treatment arms, journal, disease, etc.
 #' 
 #' @param ... an expression to be evaluated within \code{\link{kmdata_key}}
-#'   such as \code{SampleSize < 100}; see examples
+#'   such as \code{ReportedSampleSize < 100}; see examples
 #' @param return type of object to return; one of \code{"name"} (default) for
 #'   the study names that match the criteria, \code{"key"} for the matching
 #'   rows of \code{kmdata_key}, or \code{"data"} for a list of data frames for
@@ -17,18 +17,20 @@
 #' 
 #' @examples
 #' names(kmdata_key)
-#' select_kmdata(SampleSize < 100)
+#' select_kmdata(ReportedSampleSize < 100)
 #' select_kmdata(grepl('folfiri', Arms) & Outcome == 'OS')
-#' select_kmdata(SampleSize < 100 | Cancer %in% c('Lung/Colorectal', 'Prostate'))
+#' select_kmdata(ReportedSampleSize < 100 |
+#'   Cancer %in% c('Lung/Colorectal', 'Prostate'))
 #' 
 #' ## get a list of the data sets
-#' l <- select_kmdata(SampleSize < 100, return = 'data')
+#' l <- select_kmdata(ReportedSampleSize < 100, return = 'data')
 #' par(mfrow = n2mfrow(length(l)))
 #' sapply(l, kmplot)
 #' 
 #' @export
 
 select_kmdata <- function(..., return = c('name', 'key', 'data')) {
+  kmdata_key <- kmdata::kmdata_key
   m <- match.call(expand.dots = FALSE)
   l <- which(eval(m$`...`[[1L]], kmdata::kmdata_key))
   

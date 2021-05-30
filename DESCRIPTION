@@ -18,8 +18,9 @@ Imports:
   stats
 Suggests:
   knitr,
+  readxl,
   testthat
-License: MIT
+License: MIT + file LICENSE
 LazyData: yes
 URL: https://github.com/raredd/kmdata
 VignetteBuilder: knitr

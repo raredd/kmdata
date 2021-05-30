@@ -33,10 +33,10 @@ curves which can be generated several ways including the \code{R} package
 library('kmdata')
 
 xy <- system.file(
-  'etc', 'init', 'Checkmate 067_S3A_Nivolumab.csv', package = 'kmdata'
+  'etc', 'init', 'Checkmate_067_S3A_Nivolumab.csv', package = 'kmdata'
 )
 ar <- system.file(
-  'etc', 'init', 'At Risk.csv', package = 'kmdata'
+  'etc', 'init', 'Checkmate_067_At_Risk.csv', package = 'kmdata'
 )
 
 dd <- read.csv(xy)

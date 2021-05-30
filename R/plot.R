@@ -7,31 +7,34 @@
 #' 
 #' Make a Kaplan-Meier plot of a data set.
 #' 
-#' @param data a data set of class \code{"kmdata"}; alternatively, a data
-#' frame with columns "time", "event", and "arm"
+#' @param x a data set of class \code{"kmdata"}, i.e., one of the data sets
+#'   in the \pkg{kmdata} package; alternatively, a data frame with columns
+#'   "time", "event", and "arm"
 #' @param ... additional arguments passed to \code{\link[survival]{plot.survfit}}
+#'   or further to \code{\link{plot.default}} or \code{\link{par}}
 #' @param relevel logical; if \code{TRUE}, group order is reversed; by default,
-#' the arms are in alphabetical order which may not be desired for some placebo
-#' or control arms
+#'   the arms are in alphabetical order which may not be desired for some
+#'   placebo or control arms
 #' @param col a vector of colors for the survival curves (recycled for at-risk
-#' table, medians, and legend)
+#'   table, medians, and legend)
 #' @param plot logical; if \code{TRUE}, a KM figure is drawn
-#' @param xlim x-axis limits
+#' @param xlim,ylim x- and y-axis limits
 #' @param xaxis.at x-axis positions of ticks and at-risk table
 #' @param xlab,ylab the x- and y-axis labels
 #' @param lr_test logical; if \code{TRUE}, log-rank test is shown in upper
-#' right corner of figure
+#'   right corner of figure
 #' @param test_details logical; if \code{TRUE}, test statistic and degrees
-#' of freedom are added with p-value for log-rank test
+#'   of freedom are added with p-value for log-rank test
 #' @param median logical; if \code{TRUE}, the medians for each curve is added
 #' @param atrisk logical; if \code{TRUE}, an at-risk table is drawn below plot
 #' @param mark.time passed to \code{\link[survival]{plot.survfit}}
 #' @param title optional title for plot; default is \code{attr(data, 'title')}
 #' @param legend logical; if \code{TRUE}, a legend for the arms, total events,
-#' and hazard ratios is added
+#'   and hazard ratios is added
 #' 
 #' @examples
 #' kmplot(ATTENTION_2A)
+#' 
 #' kmplot(
 #'   ATTENTION_2A,
 #'   relevel = TRUE, median = FALSE,
@@ -44,17 +47,18 @@
 #' 
 #' 
 #' ## kmplot can be used generically given the proper data structure
-#' dat <- data.frame(
-#'   time = aml$time, event = aml$status, arm = aml$x
-#' )
+#' dat <- data.frame(time = aml$time, event = aml$status, arm = aml$x)
 #' kmplot(dat)
 #' 
 #' @export
 
-kmplot <- function(data, ..., relevel = FALSE, col = NULL, plot = TRUE,
-                   xlim = NULL, xaxis.at = NULL, xlab = NULL, ylab = NULL,
+kmplot <- function(x, ..., relevel = FALSE, col = NULL, plot = TRUE,
+                   xlim = NULL, ylim = NULL, xaxis.at = NULL,
+                   xlab = NULL, ylab = NULL,
                    lr_test = TRUE, test_details = TRUE, median = TRUE,
-                   atrisk = TRUE, mark.time = TRUE, title = NULL, legend = TRUE) {
+                   atrisk = TRUE, mark.time = TRUE,
+                   title = NULL, legend = TRUE) {
+  data <- x
   stopifnot(
     inherits(data, 'kmdata') |
       all(c('time', 'event', 'arm') %in% names(data))

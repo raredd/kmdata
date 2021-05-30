@@ -8,7 +8,7 @@ select_kmdata(..., return = c("name", "key", "data"))
 }
 \arguments{
 \item{...}{an expression to be evaluated within \code{\link{kmdata_key}}
-such as \code{SampleSize < 100}; see examples}
+such as \code{ReportedSampleSize < 100}; see examples}
 
 \item{return}{type of object to return; one of \code{"name"} (default) for
 the study names that match the criteria, \code{"key"} for the matching
@@ -21,12 +21,13 @@ outcome, sample size, treatment arms, journal, disease, etc.
 }
 \examples{
 names(kmdata_key)
-select_kmdata(SampleSize < 100)
+select_kmdata(ReportedSampleSize < 100)
 select_kmdata(grepl('folfiri', Arms) & Outcome == 'OS')
-select_kmdata(SampleSize < 100 | Cancer \%in\% c('Lung/Colorectal', 'Prostate'))
+select_kmdata(ReportedSampleSize < 100 |
+  Cancer \%in\% c('Lung/Colorectal', 'Prostate'))
 
 ## get a list of the data sets
-l <- select_kmdata(SampleSize < 100, return = 'data')
+l <- select_kmdata(ReportedSampleSize < 100, return = 'data')
 par(mfrow = n2mfrow(length(l)))
 sapply(l, kmplot)
 
