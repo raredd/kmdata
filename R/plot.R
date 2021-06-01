@@ -41,7 +41,7 @@
 #'   col = 3:4, xaxis.at = 0:4 * 6
 #' )
 #' 
-#' ## or equivalently
+#' ## or equivalently with ?survival::plot.survfit
 #' s <- survfit(Surv(time, event) ~ arm, ATTENTION_2A)
 #' plot(s, col = 1:2, mark.time = TRUE)
 #' 
@@ -87,15 +87,15 @@ kmplot <- function(x, ..., relevel = FALSE, col = NULL, plot = TRUE,
     return(invisible(res))
   
   
-  op <- par(las = 1L, mar = par('mar') + c(atrisk * ng + 1, atrisk * 2, 0, 0))
+  op <- par(las = 1L, mar = par('mar') + c(atrisk * ng + 1, atrisk * 2, 0, 0),
+            xaxs = 'i', yaxs = 'i')
   on.exit(par(op))
   
   col <- col %||% seq_along(sf$strata) %||% 1L
   
   plot(
     sf, col = col, mark.time = mark.time, ...,
-    xlim = xlim, ylim = c(0, 1.025), axes = FALSE,
-    xaxs = 'i', yaxs = 'i',
+    xlim = xlim, ylim = ylim %||% c(0, 1.025), axes = FALSE,
     xlab = xlab %||% sprintf('Time in %s', attr(data, 'units')),
     ylab = ylab %||% sprintf('%s probability', attr(data, 'event')),
   )
@@ -128,7 +128,7 @@ kmplot <- function(x, ..., relevel = FALSE, col = NULL, plot = TRUE,
     ar <- data.frame(n.risk = ss$n.risk, time = ss$time, strata = ss$strata)
     ar <- split(ar, ar$strata)
     
-    at <- c(2.5, 3, 3) + 0:2 + 1
+    at <- c(2.5, 3, 3) + 1:3
     for (ii in seq_along(ar))
       mtext(ar[[ii]]$n.risk, side = 1L, line = at[ii + 1L],
             at = ar[[ii]]$time, col = col[ii])
@@ -154,7 +154,7 @@ kmplot <- function(x, ..., relevel = FALSE, col = NULL, plot = TRUE,
     f <- function(x) {
       x <- if (is.na(x[1L]))
         'Not reached' else sprintf('%.1f (%.1f, %.1f)', x[1L], x[2L], x[3L])
-      gsub('NA', '-', x)
+      gsub('NA', 'NR', x)
     }
     
     md <- summary(sf)$table

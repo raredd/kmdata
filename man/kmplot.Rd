@@ -97,7 +97,7 @@ kmplot(
   col = 3:4, xaxis.at = 0:4 * 6
 )
 
-## or equivalently
+## or equivalently with ?survival::plot.survfit
 s <- survfit(Surv(time, event) ~ arm, ATTENTION_2A)
 plot(s, col = 1:2, mark.time = TRUE)
 
