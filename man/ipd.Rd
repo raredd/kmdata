@@ -11,7 +11,8 @@ ipd(
   n.atrisk,
   total = NA,
   arm = "arm",
-  tau = max(t.atrisk)
+  tau = max(t.atrisk),
+  interpolate = FALSE
 )
 }
 \arguments{
@@ -24,6 +25,12 @@ ipd(
 \item{arm}{(optional) arm label}
 
 \item{tau}{maximum follow-up time}
+
+\item{interpolate}{logical or integer; if \code{TRUE} or an integer,
+constant interpolation will be performed for the time-probability
+vectors; this may be helpful in situations with a small number of
+digitized points or if the censoring distribution is difficult to
+estimate}
 }
 \description{
 Generate individual patient data (IPD) from digitized survival curve data
@@ -31,9 +38,14 @@ using the method described by Guyot (2012).
 }
 \examples{
 \dontrun{
-xy <- system.file('etc', 'init', 'Checkmate 067_S3A_Nivolumab.csv',
-                  package = 'kmdata')
-ar <- system.file('etc', 'init', 'At Risk.csv', package = 'kmdata')
+xy <- system.file(
+  'etc', 'init', 'Checkmate_067_S3A_Nivolumab.csv',
+  package = 'kmdata'
+)
+ar <- system.file(
+  'etc', 'init', 'Checkmate_067_At_Risk.csv',
+  package = 'kmdata'
+)
 
 dd <- read.csv(xy)
 aa <- read.csv(ar)

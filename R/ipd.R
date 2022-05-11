@@ -16,6 +16,11 @@
 #' @param total (optional) total number of events
 #' @param arm (optional) arm label
 #' @param tau maximum follow-up time
+#' @param interpolate logical or integer; if \code{TRUE} or an integer,
+#'   constant interpolation will be performed for the time-probability
+#'   vectors; this may be helpful in situations with a small number of
+#'   digitized points or if the censoring distribution is difficult to
+#'   estimate
 #' 
 #' @references
 #' Guyot, Patricia, et al. Enhanced secondary analysis of survival data:
@@ -24,9 +29,14 @@
 #' 
 #' @examples
 #' \dontrun{
-#' xy <- system.file('etc', 'init', 'Checkmate 067_S3A_Nivolumab.csv',
-#'                   package = 'kmdata')
-#' ar <- system.file('etc', 'init', 'At Risk.csv', package = 'kmdata')
+#' xy <- system.file(
+#'   'etc', 'init', 'Checkmate_067_S3A_Nivolumab.csv',
+#'   package = 'kmdata'
+#' )
+#' ar <- system.file(
+#'   'etc', 'init', 'Checkmate_067_At_Risk.csv',
+#'   package = 'kmdata'
+#' )
 #' 
 #' dd <- read.csv(xy)
 #' aa <- read.csv(ar)
@@ -58,7 +68,7 @@
 #' @export
 
 ipd <- function(time, prob, t.atrisk, n.atrisk, total = NA, arm = 'arm',
-                tau = max(t.atrisk)) {
+                tau = max(t.atrisk), interpolate = FALSE) {
   stopifnot(
     length(time) == length(prob),
     length(t.atrisk) == length(n.atrisk),
@@ -67,12 +77,21 @@ ipd <- function(time, prob, t.atrisk, n.atrisk, total = NA, arm = 'arm',
     length(arm) == 1L
   )
   
+  if (!identical(interpolate, FALSE)) {
+    n <- if (is.numeric(interpolate))
+      as.integer(interpolate) else 500L
+    a <- suppressWarnings(approxfun(time, prob, method = 'constant'))
+    time <- seq(min(time), max(time), length.out = n)
+    prob <- a(time)
+  }
+  
   if (any(ii <- t.atrisk > max(time))) {
     prob <- c(prob, rep_len(prob[which.max(time)], sum(ii)))
     time <- c(time, t.atrisk[ii])
   }
   prob <- prob[time <= tau]
   time <- time[time <= tau]
+  
   n.atrisk <- n.atrisk[t.atrisk <= tau]
   t.atrisk <- t.atrisk[t.atrisk <= tau]
   
@@ -189,7 +208,7 @@ ipd_ <- function(mono, atrisk, n.atrisk, total_events = NA) {
           
           ## distribute censored observations evenly over time
           ## find no. censored on each time interval
-          cen[lower[i]:upper[i]] <- his(cen.t, t.S[lower[i]:lower[(i+1)]])
+          cen[lower[i]:upper[i]] <- his(cen.t, t.S[lower[i]:lower[(i + 1)]])
         }
         ## find no. events and no. at risk on each interval to agree with
         ## K-M estimates read from curves
@@ -244,9 +263,11 @@ ipd_ <- function(mono, atrisk, n.atrisk, total_events = NA) {
     cen.t <- rep_len(0L, n.censor[n.int])
     for (j in 1:n.censor[n.int]) {
       cen.t[j] <- t.S[lower[n.int]] + j *
-        (t.S[upper[n.int]] - t.S[lower[n.int]]) / (n.censor[n.int] + 1L)
+        (t.S[upper[n.int]] - t.S[lower[n.int]]) /
+        (n.censor[n.int] + 1L)
     }
-    cen[lower[n.int]:(upper[n.int] - 1L)] <- his(cen.t, t.S[lower[n.int]:upper[n.int]])
+    cen[lower[n.int]:(upper[n.int] - 1L)] <-
+      his(cen.t, t.S[lower[n.int]:upper[n.int]])
   }
   
   ## find no. events and no. at risk on each interval to agree with
@@ -299,7 +320,8 @@ ipd_ <- function(mono, atrisk, n.atrisk, total_events = NA) {
           cen.t <- rep_len(0L, n.censor[n.int])
           for (j in 1:n.censor[n.int]) {
             cen.t[j] <- t.S[lower[n.int]] + j *
-              (t.S[upper[n.int]] - t.S[lower[n.int]]) / (n.censor[n.int] + 1L)
+              (t.S[upper[n.int]] - t.S[lower[n.int]]) /
+              (n.censor[n.int] + 1L)
           }
           cen[lower[n.int]:(upper[n.int] - 1L)] <-
             his(cen.t, t.S[lower[n.int]:upper[n.int]])
