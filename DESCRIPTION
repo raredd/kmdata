@@ -1,7 +1,9 @@
 Package: kmdata
 Type: Package
-Title: kmdata
+Title: A Database of Reconstructed Individual Patient Level Data from
+  Oncology Clinical Trials
 Version: 1.0.1
+Date: 2022-05-11
 Authors@R: as.person(c(
     "Robert Redd <rredd@jimmy.harvard.edu> [aut, cre]",
     "Geoffrey Fell <gfell@jimmy.harvard.edu> [aut]",
