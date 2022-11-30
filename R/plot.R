@@ -65,7 +65,7 @@ kmplot <- function(x, ..., relevel = FALSE, col = NULL, plot = TRUE,
   )
   
   xlim <- if (is.null(xlim))
-    c(0, max(data$time)) else xlim
+    c(0, max(data$time, na.rm = TRUE)) else xlim
   xaxis.at <- xaxis.at %||% attr(data, 'xaxis.at') %||% pretty(xlim)
   
   data <- within(data, {
