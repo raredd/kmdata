@@ -3,6 +3,8 @@
 S3method(plot,kmdata)
 S3method(summary,kmdata)
 export(ipd)
+export(kmm)
+export(kmm_legend)
 export(kmplot)
 export(select_kmdata)
 import(survival)
