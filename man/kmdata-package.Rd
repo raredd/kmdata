@@ -61,3 +61,13 @@ type, results, and quality of each re-capitulated data set.
 \code{\link{select_kmdata}} to select studies based on characteristics
 listed in the \code{\link{kmdata_key}}
 }
+\author{
+\strong{Maintainer}: Robert Redd \email{rredd@jimmy.harvard.edu}
+
+Authors:
+\itemize{
+  \item Geoffrey Fell \email{gfell@jimmy.harvard.edu}
+  \item Rifaquat Rahman \email{rrahman@bwh.harvard.edu}
+}
+
+}
