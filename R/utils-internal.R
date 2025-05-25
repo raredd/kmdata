@@ -20,6 +20,7 @@ pvalr <- function(pv, sig.limit = 0.001, digits = 2L, show.p = TRUE) {
 }
 
 rescaler <- function(x, to = c(0, 1), from = range(x, na.rm = TRUE)) {
+  ## scales:::rescale.numeric
   (x - from[1L]) / diff(from) * diff(to) + to[1L]
 }
 
@@ -34,17 +35,16 @@ hr_pval <- function(object, details = FALSE, data = NULL, ...) {
     coxph(object, data, ...)
   else object
   
-  stopifnot(
-    inherits(object, 'coxph')
-  )
+  stopifnot(inherits(object, 'coxph'))
   
   obj <- summary(object)
-  obj <- cbind(obj$conf.int[, -2L, drop = FALSE],
-               p.value = obj$coefficients[, 'Pr(>|z|)'])
+  obj <- cbind(
+    obj$conf.int[, -2L, drop = FALSE],
+    p.value = obj$coefficients[, 'Pr(>|z|)']
+  )
   
   if (details)
-    obj
-  else obj[, 'p.value']
+    obj else obj[, 'p.value']
 }
 
 hr_text <- function(formula, data, ..., details = TRUE, pFUN = NULL) {
@@ -65,8 +65,7 @@ hr_text <- function(formula, data, ..., details = TRUE, pFUN = NULL) {
     cph <- tryCatch(
       if (inherits(object, 'coxph'))
         object else coxph(formula, data, ...),
-      # warning = function(w) '',
-      error   = function(e) e
+      error = function(e) e
     )
   })
   
@@ -87,6 +86,5 @@ hr_text <- function(formula, data, ..., details = TRUE, pFUN = NULL) {
                c('Reference', txt), sep = ': ')
   
   if (is.null(cph$xlevels))
-    c(NA, gsub('^.*: ', '', txt)[-1L])
-  else txt
+    c(NA, gsub('^.*: ', '', txt)[-1L]) else txt
 }

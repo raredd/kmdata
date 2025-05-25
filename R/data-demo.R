@@ -74,7 +74,6 @@
 #' \code{\link{summary.kmdata}}
 "kmdata_key"
 
-
 #' \code{kmdata} demographics data
 #' 
 #' Demographics of data sets in \code{kmdata} package by treatment arm. Missing

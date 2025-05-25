@@ -10,7 +10,7 @@
 #' of the American Medical Association, or Journal of the National Cancer
 #' Institute.
 #' 
-#' The final list includs 263 figures from 152 publications. The data spans
+#' The final list includes 304 figures from 153 publications. The data spans
 #' four cancers: colorectal, lung, prostate, and breast. All data sets feature
 #' time and event indicators as well as treatment arm (two arms per data set).
 #' 
@@ -50,8 +50,9 @@
 #' 
 #' ## list of studies in breast cancer with fewer than 200 patients
 #' l <- select_kmdata(Cancer %in% 'Breast' & ReportedSampleSize < 200, return = 'data')
-#' par(mfrow = n2mfrow(length(l)))
+#' op <- par(mfrow = n2mfrow(length(l)))
 #' sapply(l, kmplot)
+#' par(op)
 #'
 #' @name kmdata-package
 #' @aliases kmdata

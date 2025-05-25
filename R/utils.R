@@ -24,8 +24,9 @@
 #' 
 #' ## get a list of the data sets
 #' l <- select_kmdata(ReportedSampleSize < 100, return = 'data')
-#' par(mfrow = n2mfrow(length(l)))
+#' op <- par(mfrow = sort(n2mfrow(length(l))))
 #' sapply(l, kmplot)
+#' par(op)
 #' 
 #' @export
 

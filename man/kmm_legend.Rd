@@ -35,21 +35,22 @@ library('survival')
 set.seed(1)
 lung2 <- within(lung, {
   time <- time / 100
+  
   ## generate different curves with human error
   time2 <- time + runif(nrow(lung))
   time3 <- time + runif(nrow(lung), 0, 0.25)
-  cohort <- factor(1, 1:2)
 })
 
 truth  <- survfit(Surv(time, status) ~ 1, lung2)
 recap1 <- survfit(Surv(time2, status) ~ 1, lung2)
 recap2 <- survfit(Surv(time3, status) ~ 1, lung2)
-recap3 <- survfit(Surv(time3, status) ~ cohort, lung2)
 
 plot(truth, conf.int = FALSE)
 lines(recap1, col = 2, conf.int = FALSE)
 lines(recap2, col = 3, conf.int = FALSE)
+
 l <- list(truth = truth, recap1 = recap1, recap2 = recap2)
+
 ## error using all unique times
 kmm_legend(l)
 ## error using interpolated times 0-10 (ie, asymptotic error)
