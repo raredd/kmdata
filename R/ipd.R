@@ -12,7 +12,7 @@
 #' using the method described by Guyot (2012).
 #' 
 #' @param time,prob vectors of survival time and probabilities
-#' @param t.atrisk,n.atrisk vectors of at-risk times and number at-risk
+#' @param t.atrisk,n.atrisk vectors of times and number at-risk
 #' @param total (optional) total number of events
 #' @param arm (optional) arm label
 #' @param tau maximum follow-up time
@@ -37,38 +37,35 @@
 #'   'etc', 'init', 'Checkmate_067_At_Risk.csv',
 #'   package = 'kmdata'
 #' )
-#' 
 #' dd <- read.csv(xy)
-#' aa <- read.csv(ar)
-#' aa <- aa[aa$nrisk > 0, ]
+#' ar <- read.csv(ar) ## rows with n=0 at-risk are ignored
 #' 
-#' ## use full at-risk table data
-#' ipd1 <- ipd(dd$T, dd$S, aa$trisk, aa$nrisk, arm = 'Nivo')
+#' ## generate the patient-level censored data
+#' ipd1 <- ipd(dd$T, dd$S, ar$trisk, ar$nrisk, arm = 'Nivo')
+#' with(ipd1, tapply(time, event, summary))
+#' 
+#' ## convenience function to plot
 #' kmplot(ipd1, xaxis.at = 0:4 * 10, xlim = c(0, 45))
 #' 
-#' 
-#' ## only using 1/2 of at-risk table
-#' idx <- replace(seq_along(aa$trisk) %% 2 == 1, nrow(aa), TRUE)
-#' ipd2 <- ipd(dd$T, dd$S, aa$trisk[idx], aa$nrisk[idx], arm = 'Nivo')
-#' kmplot(ipd2, xaxis.at = 0:4 * 10, xlim = c(0, 45))
-#' 
-#' 
-#' ## only using 1/4 of at-risk table
-#' idx <- replace(seq_along(aa$trisk) %% 4 == 1, nrow(aa), TRUE)
-#' ipd3 <- ipd(dd$T, dd$S, aa$trisk[idx], aa$nrisk[idx], arm = 'Nivo')
-#' kmplot(ipd3, xaxis.at = 0:4 * 10, xlim = c(0, 45))
-#' 
-#' 
-#' ## only using 1/8 of at-risk table
-#' idx <- replace(seq_along(aa$trisk) %% 8 == 1, nrow(aa), TRUE)
-#' ipd4 <- ipd(dd$T, dd$S, aa$trisk[idx], aa$nrisk[idx], arm = 'Nivo')
-#' kmplot(ipd4, xaxis.at = 0:4 * 10, xlim = c(0, 45))
+#' ## overlay raw coordinates from digitization
+#' lines(dd$T, dd$S, col = 2)
 #' }
 #' 
 #' @export
 
 ipd <- function(time, prob, t.atrisk, n.atrisk, total = NA, arm = 'arm',
                 tau = max(t.atrisk), interpolate = FALSE) {
+  idx <- n.atrisk <= 0 | is.na(n.atrisk)
+  t.atrisk <- t.atrisk[!idx]
+  n.atrisk <- n.atrisk[!idx]
+  ord <- order(t.atrisk)
+  t.atrisk <- t.atrisk[ord]
+  n.atrisk <- n.atrisk[ord]
+  
+  ord <- order(time)
+  time <- time[ord]
+  prob <- prob[ord]
+  
   stopifnot(
     length(time) == length(prob),
     length(t.atrisk) == length(n.atrisk),
