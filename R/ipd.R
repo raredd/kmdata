@@ -38,14 +38,14 @@
 #'   package = 'kmdata'
 #' )
 #' dd <- read.csv(xy)
-#' ar <- read.csv(ar) ## rows with n=0 at-risk are ignored
+#' ar <- read.csv(ar)
 #' 
 #' ## generate the patient-level censored data
 #' ipd1 <- ipd(dd$T, dd$S, ar$trisk, ar$nrisk, arm = 'Nivo')
 #' with(ipd1, tapply(time, event, summary))
 #' 
 #' ## convenience function to plot
-#' kmplot(ipd1, xaxis.at = 0:4 * 10, xlim = c(0, 45))
+#' kmplot(ipd1, xaxis.at = ar$trisk)
 #' 
 #' ## overlay raw coordinates from digitization
 #' lines(dd$T, dd$S, col = 2)
@@ -54,10 +54,12 @@
 #' @export
 
 ipd <- function(time, prob, t.atrisk, n.atrisk, total = NA, arm = 'arm',
-                tau = max(t.atrisk), interpolate = FALSE) {
-  idx <- n.atrisk <= 0 | is.na(n.atrisk)
+                tau = max(time, t.atrisk), interpolate = FALSE) {
+  # idx <- n.atrisk <= 0 | is.na(n.atrisk)
+  idx <- is.na(n.atrisk)
   t.atrisk <- t.atrisk[!idx]
   n.atrisk <- n.atrisk[!idx]
+  
   ord <- order(t.atrisk)
   t.atrisk <- t.atrisk[ord]
   n.atrisk <- n.atrisk[ord]
@@ -69,7 +71,7 @@ ipd <- function(time, prob, t.atrisk, n.atrisk, total = NA, arm = 'arm',
   stopifnot(
     length(time) == length(prob),
     length(t.atrisk) == length(n.atrisk),
-    all(n.atrisk > 0),
+    # all(n.atrisk > 0),
     length(total) == 1L,
     length(arm) == 1L
   )

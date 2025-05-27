@@ -41,10 +41,10 @@ ar <- system.file(
 
 dd <- read.csv(xy)
 aa <- read.csv(ar)
-aa <- aa[aa$nrisk > 0, ]
+# aa <- aa[aa$nrisk > 0, ]
 
 pd <- ipd(dd$T, dd$S, aa$trisk, aa$nrisk, arm = 'Nivo')
-kmplot(pd, conf.int = FALSE, median = FALSE)
+kmplot(pd, xaxis.at = aa$trisk, conf.int = FALSE, median = FALSE)
 
 points(S ~ T, dd, type = 's', col = 'red')
 
